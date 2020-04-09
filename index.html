@@ -1,0 +1,180 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>stellar-option</title>
+	<meta name="description" content="Documentation for stellar-option">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">stellar-option</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>stellar-option</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#futuretensestellar-option" id="futuretensestellar-option" style="color: inherit; text-decoration: none;">
+					<h1>@futuretense/stellar-option</h1>
+				</a>
+				<p>An options generator for Stellar</p>
+				<p>Generates Stellar smart contracts for European-style options.</p>
+				<p>An option is a financial instrument that gives a buyer the <em>right</em> (but not the obligation)
+				to buy an asset at a predetermined price, at a future date.</p>
+				<p>The option is implemented as a locked account where the underlying asset is held in escrow
+				until one of two things happen:</p>
+				<ul>
+					<li>The buyer waits until the option matures, and decided to exercise the option.</li>
+					<li>The seller waits a bit longer, and is able to reclaim the underlying asset.</li>
+				</ul>
+				<a href="#install" id="install" style="color: inherit; text-decoration: none;">
+					<h1>Install</h1>
+				</a>
+				<p><code>npm install @futuretense/stellar-option</code></p>
+				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+					<h1>Usage</h1>
+				</a>
+				<a href="#creating-the-option" id="creating-the-option" style="color: inherit; text-decoration: none;">
+					<h2>Creating the option</h2>
+				</a>
+				<pre><code class="language-typescript">
+<span class="hljs-keyword">import</span> { Option } <span class="hljs-keyword">from</span> <span class="hljs-string">'@futuretense/stellar-option'</span>;
+
+<span class="hljs-comment">//</span>
+<span class="hljs-comment">//  paying 10 XLM for the option of buying 1 TEST for 200 XLM at expiry</span>
+<span class="hljs-comment">//</span>
+
+<span class="hljs-keyword">const</span> params = {
+    underlying: {
+        amount: <span class="hljs-number">1</span>,
+        asset: <span class="hljs-keyword">new</span> StellarSdk.Asset(<span class="hljs-string">'TEST'</span>, issuer)
+    },
+    premium: {
+        amount: <span class="hljs-number">10</span>,
+        asset: StellarSdk.Asset.native()
+    },
+    exercise: {
+        amount: <span class="hljs-number">200</span>,
+        asset: StellarSdk.Asset.native()
+    },
+    expiry: <span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Date</span>.now()/<span class="hljs-number">1000</span>) + <span class="hljs-number">150</span>,
+    delay: <span class="hljs-number">3600</span>,
+};
+
+<span class="hljs-keyword">const</span> option = <span class="hljs-keyword">new</span> Option(
+    buyer,
+    seller,
+    params
+);
+
+<span class="hljs-keyword">const</span> server = <span class="hljs-keyword">new</span> StellarSdk.Server(<span class="hljs-string">'https://horizon.stellar.org'</span>);
+<span class="hljs-keyword">const</span> transactions = <span class="hljs-keyword">await</span> option.createTransactions(server);
+
+transactions.setup.sign(buyerKeys);
+transactions.setup.sign(sellerKeys);
+
+<span class="hljs-keyword">await</span> server.submitTransaction(transactions.setup);
+</code></pre>
+				<a href="#exercising-the-option" id="exercising-the-option" style="color: inherit; text-decoration: none;">
+					<h2>Exercising the option</h2>
+				</a>
+				<pre><code><span class="hljs-selector-tag">transactions</span><span class="hljs-selector-class">.exercise</span><span class="hljs-selector-class">.sign</span>(<span class="hljs-selector-tag">buyerKeys</span>);
+<span class="hljs-selector-tag">await</span> <span class="hljs-selector-tag">server</span><span class="hljs-selector-class">.submitTransaction</span>(<span class="hljs-selector-tag">transactions</span><span class="hljs-selector-class">.exercise</span>);</code></pre>
+				<a href="#refunding-to-seller" id="refunding-to-seller" style="color: inherit; text-decoration: none;">
+					<h2>Refunding to seller</h2>
+				</a>
+				<pre><code>await server.submit<span class="hljs-constructor">Transaction(<span class="hljs-params">transactions</span>.<span class="hljs-params">refund</span>)</span>;</code></pre><p>Copyright &copy; 2020 Future Tense, LLC</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/option.html" class="tsd-kind-icon">Option</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#assetamount" class="tsd-kind-icon">Asset<wbr>Amount</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#networkoptions" class="tsd-kind-icon">Network<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#optionparams" class="tsd-kind-icon">Option<wbr>Params</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#optiontransactions" class="tsd-kind-icon">Option<wbr>Transactions</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer>
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>
