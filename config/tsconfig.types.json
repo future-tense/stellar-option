@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "removeComments": false,
+    "stripInternal": true,
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "../temp/types",
+    "sourceMap": false,
+    "target": "es2017",
+    "outDir": "../temp",
+    "esModuleInterop": true,
+    "lib": [
+      "es6",
+      "dom"
+    ]
+  },
+  "include": [
+    "../src/**/*.ts"
+  ],
+  "exclude": [
+    "../node_modules",
+    "../**/*.test.ts"
+  ]
+}

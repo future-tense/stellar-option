@@ -1,0 +1,33 @@
+{
+  "name": "@futuretense/stellar-option",
+  "version": "1.0.0",
+  "description": "An options generator for Stellar",
+  "main": "lib/commonjs/index.js",
+  "browser": "lib/esm/browser.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "clean": "rm -rf lib && rm -rf temp",
+    "build": "npm run clean && npm run build:cjs && npm run build:esm && npm run build:types",
+    "build:esm": "npx tsc -p tsconfig.json -m es6 --outDir lib/esm",
+    "build:cjs": "npx tsc -p tsconfig.json -m commonjs --outDir lib/commonjs",
+    "build:types": "npx tsc -p config/tsconfig.types.json && npx api-extractor run -c config/api-extractor.json --local",
+    "build:docs": "npx typedoc --options config/typedoc.json --tsconfig tsconfig.json",
+    "publish:docs": "npx gh-pages -m 'Updates' -d docs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Johan Stén <johan@futuretense.io>",
+  "license": "MIT",
+  "dependencies": {
+    "bignumber.js": "^9.0.0",
+    "stellar-sdk": "^4.1.0"
+  },
+  "devDependencies": {
+    "@microsoft/api-extractor": "^7.7.13",
+    "gh-pages": "^2.2.0",
+    "typedoc": "^0.17.4",
+    "typescript": "^3.8.3"
+  }
+}
