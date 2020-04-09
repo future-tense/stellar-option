@@ -1,6 +1,6 @@
 {
   "name": "@futuretense/stellar-option",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An options generator for Stellar",
   "main": "lib/commonjs/index.js",
   "browser": "lib/esm/browser.js",
