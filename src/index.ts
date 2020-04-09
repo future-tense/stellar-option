@@ -170,7 +170,6 @@ export class Option {
 
         const escrowSequence = await this.calculateEscrowSequenceNumber(server);
         const balance = this.calculateStartingBalance();
-        console.log(balance);
 
         createAccount(builder, this.seller, escrow, balance, escrowSequence);
         addTrustline(builder, escrow, this.underlying);
